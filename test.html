@@ -4,7 +4,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
 <body>
-  <script src="keymaster.js15patch.js"></script>
+  <script src="keymaster.patch.js"></script>
   <script src="keymaster.js"></script>
 
   <h1>
@@ -73,6 +73,18 @@
       console.log(handler.shortcut, handler.scope);
       return false;
     });
+
+    key(["g", "s"], function () {
+      console.log("go -> settings");
+    });
+
+    key(["g", "s", "f"], function () {
+      console.log("go -> settings -> fonts");
+    })
+
+    key(["ctrl+g,alt+g", "s"], function () {
+      console.log("gogo -> settings");
+    })
   </script>
 </body>
 </html>

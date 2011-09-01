@@ -1,13 +1,18 @@
 /**
- * The following patches are for web browsers support prior to JavaScript 1.6.
+ * The following patches are for web browsers support prior to JavaScript 1.8.5.
  *
- * Internet Explorer version upto 8 requires this file.
+ * List of first version of browser DO NOT require this file:
+ *
+ *   Chrome            7
+ *   Firefox           4
+ *   Internet Explorer 9
  *
  * List of patched stuff:
  *
  *   Array.forEach
  *   Array.indexOf
  *   Array.map
+ *   Function.bind
  */
 
 
@@ -180,4 +185,29 @@ if (!Array.prototype.map) {
     // 9. return A
     return A;
   };      
+}
+
+
+// Source: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
+if (!Function.prototype.bind) {
+
+  Function.prototype.bind = function (oThis) {
+
+    if (typeof this !== "function") // closest thing possible to the ECMAScript 5 internal IsCallable function
+      throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");
+
+    var aArgs = Array.prototype.slice.call(arguments, 1), 
+        fToBind = this, 
+        fNOP = function () {},
+        fBound = function () {
+          return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));    
+        };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+
+    return fBound;
+
+  };
+
 }

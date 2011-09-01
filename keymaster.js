@@ -33,7 +33,6 @@
     var key, tagName, handler, k, i, modifiersMatch;
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
-
     // if a modifier key, set the key.<modifierkeyname> property to true and return
     if (key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
     if (key in _mods) {
@@ -129,6 +128,34 @@
     });
   };
 
+  function assignKeys(keys, scope, method) {
+    if (method === undefined) {
+      method = scope;
+      scope = 'all';
+    }
+    if (typeof keys == 'string')
+      keys = [keys];
+
+    keys.forEach(function(key, i){
+      //create specific scope for current key in sequence
+      newScope = scope + '-' + key;
+      if (i < keys.length - 1) {
+        assignKey(key, scope, function (ev, key) {
+          setScope(this.toString());
+
+            // reset scope after 1 second
+          _timer = setTimeout(function () {
+            setScope('all');
+          }, 1000);
+        }.bind(newScope));
+      } else {
+        // last key should perform the method
+        assignKey(key, scope, method);
+      }
+      scope = newScope;
+    });
+  }
+
   // initialize key.<modifier> to false
   for (k in _MODIFIERS)
     assignKey[k] = false;
@@ -153,7 +180,7 @@
   addEvent(document, 'keyup', clearModifier);
 
   // set window.key and window.key.setScope
-  global.key = assignKey;
+  global.key = assignKeys;
   global.key.setScope = setScope;
 
   if (typeof module !== 'undefined')

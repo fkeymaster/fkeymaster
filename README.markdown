@@ -1,11 +1,17 @@
 # keymaster.js
 
-Keymaster is a simple library for defining and
-dispatching keyboard shortcuts. It has no dependencies.
+FKeymaster is a simple library for defining and dispatching keyboard shortcuts. It has no dependencies. It's a fork of [keymaster.js][original].
 
-*It’s a work in progress (e.g. beta), so spare me your nerdrage and instead
-contribute! Patches are welcome, but they are not guaranteed to make
-it in.*
+[original]: https://github.com/madrobby/keymaster
+
+## Demonstration
+
+FKeymaster should work with any browser that fires `keyup` and `keydown` events,
+and is tested with IE (6+), Safari, Firefox and Chrome.
+
+See [http://madrobby.github.com/keymaster/](http://madrobby.github.com/keymaster/) for a live demo.
+
+## Basic concept
 
 One global method is exposed, `key` which defines shortcuts when
 called directly. Use `key.setScope` for switching scope.
@@ -23,8 +29,7 @@ The following special keys can be used for shortcuts:
 `up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
 and `f1` through `f19`.
 
-When an `INPUT`, `SELECT` or `TEXTAREA` element is focussed, Keymaster
-doens't process shortcuts.
+## Assigning keys to handler function
 
 ```javascript
 // define short of 'a'
@@ -41,14 +46,30 @@ key('o, enter', 'issues', function(){ /* do something */ });
 key('o, enter', 'files', function(){ /* do something else */ });
 key.setScope('issues'); // default scope is 'all'
 
+// sequence key
+key(['g', 's'], function(){ /* do something */ });
+
 // query modifier keys
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
 
-Keymaster should work with any browser that fires `keyup` and `keydown` events,
-and is tested with IE (6+), Safari, Firefox and Chrome.
+## Handler function
 
-See [http://madrobby.github.com/keymaster/](http://madrobby.github.com/keymaster/) for a live demo.
+The handler method is called with two arguments set, the keydown `event` fired, and
+an object containing, among others, the following two properties:
+
+`key`: a string that contains the key triggered, e.g. `ctrl+r`
+`scope`: a string describing the scope (or `all`)
+
+```javascript
+key('⌘+r, ctrl+r', function(event, handler){
+  console.log(handler.shortcut, handler.scope);
+});
+
+// "ctrl+r", "all"
+```
+
+## CoffeeScript
 
 If you're using CoffeeScript, configuring key shortcuts couldn't be simpler:
 
@@ -63,20 +84,6 @@ key 'o, enter', 'issues', ->
   whatevs()
 
 alert 'shift is pressed, OMGZ!' if key.shift
-```
-
-The handler method is called with two arguments set, the keydown `event` fired, and
-an object containing, among others, the following two properties:
-
-`shortcut`: a string that contains the shortcut used, e.g. `ctrl+r`
-`scope`: a string describing the scope (or `all`)
-
-```javascript
-key('⌘+r, ctrl+r', function(event, handler){
-  console.log(handler.shortcut, handler.scope);
-});
-
-// "ctrl+r", "all"
 ```
 
 ## Ender support

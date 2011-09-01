@@ -44,10 +44,6 @@
       return;
     }
 
-    // ignore keypressed in any elements that support keyboard data input
-    if (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA')
-      return;
-
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers))
       return;
@@ -55,29 +51,37 @@
     // for each potential shortcut
     _handlers[key].forEach(function(handler){
       // see if it's in the current scope
-      if (handler.scope == _scope || handler.scope == 'all'){
-        // check if modifiers match if any
-        modifiersMatch = handler.mods.length > 0;
-        for (k in _mods)
-          if ((  !_mods[k] && handler.mods.indexOf(+k) >  -1)
-              || (_mods[k] && handler.mods.indexOf(+k) == -1))
-            modifiersMatch = false;
-        // call the handler and stop the event if neccessary
-        if ((handler.mods.length == 0
-             && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91])
-            || modifiersMatch){
-          if (handler.method(event, handler)===false){
-            if (event.preventDefault)
-              event.preventDefault();
-            else
-              event.returnValue = false;
+      if(handler.targetSpec.scope && handler.targetSpec.scope != _scope)
+        return;
+      // ignore keypressed in any elements that support keyboard data input
+      if(handler.targetSpec.id === null &&
+          (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA'))
+        return;
+      if(handler.targetSpec.id && event.target.id != handler.targetSpec.id)
+        return;
+      if(handler.targetSpec.tagName && event.target.tagName != handler.targetSpec.tagName)
+        return;
+      // check if modifiers match if any
+      modifiersMatch = handler.mods.length > 0;
+      for (k in _mods)
+        if ((  !_mods[k] && handler.mods.indexOf(+k) >  -1)
+            || (_mods[k] && handler.mods.indexOf(+k) == -1))
+          modifiersMatch = false;
+      // call the handler and stop the event if neccessary
+      if ((handler.mods.length == 0
+           && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91])
+          || modifiersMatch){
+        if (handler.method(event, handler)===false){
+          if (event.preventDefault)
+            event.preventDefault();
+          else
+            event.returnValue = false;
 
-            if (event.stopPropagation)
-              event.stopPropagation();
+          if (event.stopPropagation)
+            event.stopPropagation();
 
-            if (event.cancelBubble)
-              event.cancelBubble = true;
-          }
+          if (event.cancelBubble)
+            event.cancelBubble = true;
         }
       }
     });
@@ -96,12 +100,14 @@
   };
 
   // parse and assign shortcut
-  function assignKey(key, scope, method){
+  function assignKey(key, targetSpec, method){
     var keys, mods, i, mi;
     if (method === undefined) {
-      method = scope;
-      scope = 'all';
+      method = targetSpec;
+      targetSpec = { id: null };
     }
+    if (typeof targetSpec == 'string')
+      targetSpec = { scope: targetSpec };
     key = key.replace(/\s/g,'');
     keys = key.split(',');
     // for each shortcut
@@ -121,26 +127,30 @@
       // ...store handler
       if (!(key in _handlers))
         _handlers[key] = [];
-      _handlers[key].push({ scope: scope,
+      _handlers[key].push({ targetSpec: targetSpec,
                             method: method,
                             key: originalKey,
                             mods: mods });
     });
   };
 
-  function assignKeys(keys, scope, method) {
+  function assignKeys(keys, targetSpec, method) {
     if (method === undefined) {
-      method = scope;
-      scope = 'all';
+      method = targetSpec;
+      targetSpec = { id: null };
     }
+    if (typeof targetSpec == 'string')
+      targetSpec = { scope: targetSpec };
     if (typeof keys == 'string')
       keys = [keys];
 
     keys.forEach(function(key, i){
-      //create specific scope for current key in sequence
-      newScope = scope + '-' + key;
       if (i < keys.length - 1) {
-        assignKey(key, scope, function (ev, key) {
+        //create specific scope for current key in sequence
+        var newScope = key;
+        if (targetSpec.scope)
+          newScope = targetSpec.scope + '-' + newScope;
+        assignKey(key, targetSpec, function (ev, key) {
           setScope(this.toString());
 
             // reset scope after 1 second
@@ -148,11 +158,11 @@
             setScope('all');
           }, 1000);
         }.bind(newScope));
+        targetSpec.scope = newScope;
       } else {
         // last key should perform the method
-        assignKey(key, scope, method);
+        assignKey(key, targetSpec, method);
       }
-      scope = newScope;
     });
   }
 

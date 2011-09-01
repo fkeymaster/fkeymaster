@@ -8,7 +8,7 @@ FKeymaster is a simple library for defining and dispatching keyboard shortcuts. 
 
 See [live demo][demo].
 
-[demo]: http://madrobby.github.com/keymaster/
+[demo]: http://fkeymaster.github.com/fkeymaster/
 
 ## Basic concept
 
@@ -32,21 +32,21 @@ and `f1` through `f19`.
 
 ```javascript
 // define short of 'a'
-key('a', function(){ alert('you pressed a!') });
+key('a', func);
 
 // returning false stops the event and prevents default browser events
 key('ctrl+r', function(){ alert('stopped reload!'); return false });
 
 // multiple shortcuts
-key('command+r, ctrl+r', function(){ });
+key('command+r, ctrl+r', func);
 
 // shortcut with a scope
-key('o, enter', 'issues', function(){ /* do something */ });
-key('o, enter', 'files', function(){ /* do something else */ });
+key('o, enter', 'issues', func);
+key('o, enter', 'files', func);
 key.setScope('issues'); // default scope is 'all'
 
 // sequence key
-key(['g', 's'], function(){ /* do something */ });
+key(['g', 's'], func);
 
 // query modifier keys
 if(key.shift) alert('shift is pressed, OMGZ!');
@@ -113,8 +113,11 @@ $.key('⌘+r', function () {
 
 ## TODO
 
-* Make behavior with `INPUT` / `SELECT` / `TEXTAREA` configurable
 * Comprehensive test suite
 
-Keymaster is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
+## License
+
+* FKeymaster is (c) 2011 FKeymaster contributers and may be freely distributed under the MIT license.
+* Keymaster is (c) 2011 Thomas Fuchs and may be freely distributed under the MIT license.
+
 See the `MIT-LICENSE` file.

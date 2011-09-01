@@ -29,28 +29,27 @@
     _MODIFIERS['f' + k] = 111 + k;
 
   //Test a element against a selector
-  function matches_sel(elem,selector,first,a,b,c){
+  function matches_sel(elem, selector, first, a, b, c){
     //Take off first part of selector
-    first=(selector=selector.split(".")).shift();
-    c=" "+elem.className+" ";
+    first = (selector = selector.split(".")).shift();
+    c = " " + elem.className + " ";
     
     //If there is a first section and it contains an id, check to see if that matches with the element, otherwise return a falsey value
-    if(first&&~(a=first.indexOf("#"))&&(b=first.slice(1+a),first=first.slice(0,a),elem.id!=b)?
-    0
-    :
-    //if there is anything left of the first section, test to see if it matches with the element's tag
-    first&&elem.nodeName!=first.toUpperCase()?
-    0
-    :1
-    ){
-        //Loop through the rest of the selector testing for classNames
-        for(a=0,b=selector.length;a<b;a++){
-            if(!~c.indexOf(" "+selector[a]+" ")) return 0;
-        }
-        
-        
-        //If everything else matched, return true
-        return 1;
+    if (first && ~(a = first.indexOf("#"))
+        && (b = first.slice(1 + a), first = first.slice(0, a), elem.id != b)
+           ? 0
+           //if there is anything left of the first section, test to see if it matches with the element's tag
+           : first && elem.nodeName != first.toUpperCase()
+             ? 0
+             : 1) {
+      //Loop through the rest of the selector testing for classNames
+      for (a=0, b=selector.length; a<b; a++){
+        if (!~c.indexOf(" " + selector[a] + " "))
+          return 0;
+      }
+
+      //If everything else matched, return true
+      return 1;
     }
   }
 
@@ -77,13 +76,13 @@
     // for each potential shortcut
     _handlers[key].forEach(function(handler){
       // see if it's in the current scope
-      if(handler.targetSpec.scope && handler.targetSpec.scope != _scope)
+      if (handler.targetSpec.scope && handler.targetSpec.scope != _scope)
         return;
       // ignore keypressed in any elements that support keyboard data input as long as they are not specifically targeted
-      if(handler.targetSpec.match === null &&
+      if (handler.targetSpec.match === null &&
           (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA'))
         return;
-      if(handler.targetSpec.match && !matches_sel(event.target, handler.targetSpec.match) 
+      if (handler.targetSpec.match && !matches_sel(event.target, handler.targetSpec.match)) 
         return;
       // check if modifiers match if any
       modifiersMatch = handler.mods.length > 0;
@@ -114,7 +113,7 @@
   // unset modifier keys on keyup
   function clearModifier(event){
     var key = event.keyCode, k;
-    if (key == 93 || key == 224)
+    if (key = 93 || key == 224)
       key = 91;
     if (key in _mods) {
       _mods[key] = false;
@@ -128,7 +127,7 @@
     var keys, mods, i, mi;
     if (method === undefined) {
       method = targetSpec;
-      targetSpec = { id: null };
+      targetSpec = { match: null };
     }
     if (typeof targetSpec == 'string')
       targetSpec = { scope: targetSpec };
@@ -160,14 +159,13 @@
 
   function cloneTargetSpec(targetSpec) {
     return {scope: targetSpec.scope,
-            id: targetSpec.id,
-            tagName: targetSpec.tagName};
+            match: targetSpec.match};
   } 
 
   function assignKeys(keys, targetSpec, method) {
     if (method === undefined) {
       method = targetSpec;
-      targetSpec = { id: null };
+      targetSpec = { match: null };
     }
     if (typeof targetSpec == 'string')
       targetSpec = { scope: targetSpec };

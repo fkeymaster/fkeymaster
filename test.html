@@ -40,6 +40,13 @@
 
   <textarea placeholder="My ID is TextArea" id="TextArea"></textarea>
 
+  <p>More tests on sequence keys:</p>
+
+  <ol>
+    <li>Press 'g', 's'.</li>
+    <li>Press 'g', 's', 'f'.</li>
+    <li>Press 'ctrl+g' or 'alt+g', 's'.</li>
+  </ol>
 
   <script>
     key('c', 'issues', function(){
@@ -60,16 +67,16 @@
       console.log('(example of multiple assignment)');
     });
 
-    key('i', { id: "TextArea" }, function(){
+    key('i', { match: "#TextArea" }, function(){
       console.log('You pressed i in TextArea');
     });
 
-    key('i', { id: "TextArea", scope: "issues" }, function(){
+    key('i', { match: "#TextArea", scope: "issues" }, function(){
       key.setScope('issues');
       console.log('You pressed i in TextArea with "issues" scope');
     });
 
-    key('t', { tagName: "TEXTAREA" }, function(){
+    key('t', { match: "textarea" }, function(){
       console.log('You pressed t in <textarea/>');
     });
 

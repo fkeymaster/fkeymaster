@@ -189,7 +189,7 @@
         (function(scope, seqBegin){
           assignKey(key, targetSpec, function (ev, key) {
             // If another seq is in progress, then this seq won't be started.
-            if (_fallbackScope !== null)
+            if (_fallbackScope !== null && seqBegin)
               return;
             if (seqBegin) {
               _fallbackScope = _scope;

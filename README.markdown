@@ -12,21 +12,28 @@ See [live demo][demo].
 
 ## Basic concept
 
-One global method is exposed, `key` which defines shortcuts when
-called directly. Use `key.setScope` for switching scope.
+One global method is exposed, `key` which assign keys when called directly.
 
-At any point in time (even in code other than key shortcut handlers),
+At any point in time (even in code other than key handlers),
 you can query the `key` object for the state of modifier keys. This
 allows easy implementation of things like shift+click handlers. For example,
 `key.shift` is `true` if the shift key is currently pressed.
 
-Keymaster understands the following modifiers:
+FKeymaster understands the following modifiers:
+
 `⇧`, `shift`, `option`, `⌥`, `alt`, `ctrl`, `control`, `command`, and `⌘`.
 
-The following special keys can be used for shortcuts:
+The following special keys can be used for keys:
+
 `backspace`, `tab`, `clear`, `enter`, `return`, `esc`, `escape`, `space`,
 `up`, `down`, `left`, `right`, `home`, `end`, `pageup`, `pagedown`, `del`, `delete`
 and `f1` through `f19`.
+
+### Scope
+
+Scope is an important concept in FKeymaster. The default scope is 'all'. You can assign a key with scope or without. When you don't assign with scope, which mean that key will be activated in any scope.
+
+Use `key.setScope` for switching current scope.
 
 ## Assigning keys to handler function
 

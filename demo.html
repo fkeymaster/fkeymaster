@@ -2,94 +2,126 @@
 <head>
   <title>The Keymaster</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-</head>
-<body>
   <script src="keymaster.patch.js"></script>
   <script src="keymaster.js"></script>
+<style>
+#messages {
+  width: 100%;
+  height: 200px;
+}
+kbd {
+  background-color: #ccc;
+  border: 2px solid #888;
+  border-right: 2px solid #aaa;
+  border-bottom: 2px solid #aaa;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+</style>
+<script>
+function updateScope(scope) {
+  var e = document.getElementById('scope');
+  e.innerHTML = scope;
+}
 
+function msg(message) {
+  var e = document.getElementById('messages');
+  e.value += message + '\n';
+}
+
+function init() {
+  var _oldSetScope = key.setScope;
+  key.setScope = function (scope) {
+    _oldSetScope(scope);
+    updateScope(scope);
+  }
+}
+</script>
+</head>
+<body onload="init()">
   <h1>
-    The Keymaster
+    The FKeymaster Demonstration
   </h1>
 
-  <input type="text" placeholder="a text input"/>
-  <select><option></option><option>select</option></select>
-  <textarea placeholder="a textarea"></textarea>
+  <div>Current Scope: <span id="scope">all</span></div>
+  <div>
+    <div>Messages: (Press 'c' in it with 'all' scope to clear messages)</div>
+    <textarea id="messages"></textarea>
+  </div>
 
+  <script>
+    key('c', { match: '#messages' }, function(){
+      var e = document.getElementById('messages');
+      e.value = '';
+      return false;
+    });
+  </script>
+
+  <div>
+    <input type="text" placeholder="a text input"/>
+    <select><option></option><option>select</option></select>
+  </div>
+  <div>
+    <textarea placeholder="a textarea"></textarea>
+    <textarea placeholder="My ID is TextArea" id="TextArea"></textarea>
+  </div>
+
+  <p>Text in [SCOPE] indicates the key is activated in SCOPE. [ANY] means any scopes.</p>
   <ol>
-    <li>Press 'c'. Nothing should be logged on console.</li>
-    <li>Press 'o' or Enter or Cursor &larr;. Console should log function call.</li>
-    <li>Press 'i'. Switches scope to 'issues'.</li>
-    <li>Press 'c'. Console should log function call.</li>
-    <li>Press 'o' or Enter or Cursor &larr;. Console should log function call.</li>
+    <li><kbd>o</kbd> or <kbd>Enter</kbd> or <kbd>&larr;</kbd> [ANY]</li>
+    <li><kbd>i</kbd>:
+      <ul>
+        <li>Switches scope to 'issues'. [ANY]</li>
+        <li>match: <code>#TextArea</code>. [issues] or [all]</li>
+      </ul>
+    <li><kbd>a</kbd>: Switches scope to 'all'. [ANY]</li>
+    <li><kbd>b</kbd>: Switches scope to 'Blah Blah Blah'. [ANY]</li>
+    <li><kbd>c</kbd> [issues]</li>
+    <li><kbd>t</kbd>: match: <code>textarea</code>. [ANY]</li>
+    <li><kbd>⌘</kbd>+<kbd>&rarr;</kbd>, <kbd>Shift</kbd>+<kbd>&larr;</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>d</kbd>. [ANY]</li>
+    <li><kbd>s</kbd>→<kbd>i</kbd> [issues]</li>
+    <li><kbd>g</kbd>→<kbd>s</kbd> [ANY]</li>
+    <li><kbd>g</kbd>→<kbd>s</kbd>→<kbd>f</kbd> [ANY]</li>
+    <li><kbd>Ctrl</kbd>+<kbd>g</kbd> or <kbd>Alt</kbd>+<kbd>g</kbd>→<kbd>s</kbd> [ANY]</li>
   </ol>
 
   <p>
-    At any time, try pressing ⌘+right, shift+left or ctrl+shift+alt+d.
+    When a input, a select or a textarea element above is focused, key inputs should be ignored if it's [ANY].
   </p>
-  
-  <p>
-    When a input, a select or a textarea element above is focused, key inputs should be ignored except 't' in textarea.
-  </p>
-  
-  <p>More tests on target spec:</p>
-
-  <ol>
-    <li>Press 'i'. In the following textarea with or without 'issues' scope.</li>
-    <li>Press 't'. It will only be activated in textarea elements.</li>
-  </ol>
-
-  <textarea placeholder="My ID is TextArea" id="TextArea"></textarea>
-
-  <p>More tests on sequence keys:</p>
-
-  <ol>
-    <li>Press 'g', 's'.</li>
-    <li>Press 'g', 's', 'f'.</li>
-    <li>Press 'ctrl+g' or 'alt+g', 's'.</li>
-  </ol>
 
   <script>
     key('c', 'issues', function(){
-     console.log('c/issues');
+     msg('c/issues');
     });
 
     key('command+r, ctrl+r', 'issues', function(){
-      console.log('Hijacked Command+R or Ctrl+R, damn!');
+      msg('Hijacked Command+R or Ctrl+R, damn!');
       return false;
     });
-    
-    key('i', function(){
-      key.setScope('issues');
-      console.log('Switched to "issues" scope. Command+R or Ctrl+R is now no longer reloading...');
-    });
-    
-    key('i', function(){
-      console.log('(example of multiple assignment)');
-    });
-
-    key('i', { match: "#TextArea" }, function(){
-      console.log('You pressed i in TextArea');
+   
+    key('i', { match: "#TextArea", scope: "all" }, function(){
+      msg('You pressed i in TextArea with "all" scope');
     });
 
     key('i', { match: "#TextArea", scope: "issues" }, function(){
-      key.setScope('issues');
-      console.log('You pressed i in TextArea with "issues" scope');
+      msg('You pressed i in TextArea with "issues" scope');
     });
 
     key('t', { match: "textarea" }, function(){
-      console.log('You pressed t in <textarea/>');
+      msg('You pressed t in <textarea/> and I ate you "t." Nomnomnom.');
+      return false;
     });
 
     key('o, enter, left', function(){
-      console.log('o, enter or left pressed!');
+      msg('o, enter or left pressed!');
     });
 
     key('ctrl+c', function(){
-      console.log('this is not the command line');
+      msg('this is not the command line');
     });
 
     key('⌘+right,shift+left,ctrl+shift+alt+d', function(event){
-      console.log('command+right, or shift+left, or ctrl+shift+alt+d');
+      msg('command+right, or shift+left, or ctrl+shift+alt+d is pressed, check your console log.');
       console.log('here is the event: ', event);
       console.log('key.control', key.control);
       console.log('key.ctrl', key.ctrl);
@@ -100,21 +132,40 @@
     });
 
     key('⌘+x, ctrl+x', function(event, handler){
-      console.log(handler.shortcut, handler.scope);
+      msg('key: ' + handler.key + ', scope: ' + handler.scope);
       return false;
     });
 
+    key(["s", "i"], 'issues', function () {
+      msg("show -> issues");
+    });
+
     key(["g", "s"], function () {
-      console.log("go -> settings");
+      msg("go -> settings");
     });
 
     key(["g", "s", "f"], function () {
-      console.log("go -> settings -> fonts");
+      msg("go -> settings -> fonts");
     })
 
     key(["ctrl+g,alt+g", "s"], function () {
-      console.log("gogo -> settings");
+      msg("gogo -> settings");
     })
+
+    key('b', function(){
+      key.setScope('Blah Blah Blah');
+      msg('Switched to "Blah Blah Blah" scope.');
+    });
+
+    key('i', function(){
+      key.setScope('issues');
+      msg('Switched to "issues" scope. Command+R or Ctrl+R is now no longer reloading...');
+    });
+
+    key('a', function(){
+      key.setScope('all');
+      msg('Switched to "all" scope.');
+    });
   </script>
 </body>
 </html>

@@ -60,13 +60,14 @@
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
     // if a modifier key, set the key.<modifierkeyname> property to true and return
-    if (key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
+    if (key == 93 || key == 224)
+      key = 91; // right command on webkit, command on Gecko
     if (key in _mods) {
       _mods[key] = true;
-      // 'assignKey' from inside this closure is exported to window.key
+      // 'assignKeys' from inside this closure is exported to window.key
       for (k in _MODIFIERS)
         if (_MODIFIERS[k] == key)
-          assignKey[k] = true;
+          assignKeys[k] = true;
       return;
     }
 
@@ -115,13 +116,13 @@
   // unset modifier keys on keyup
   function clearModifier(event){
     var key = event.keyCode, k;
-    if (key = 93 || key == 224)
+    if (key == 93 || key == 224)
       key = 91;
     if (key in _mods) {
       _mods[key] = false;
       for (k in _MODIFIERS)
         if (_MODIFIERS[k] == key)
-          assignKey[k] = false;
+          assignKeys[k] = false;
     }
   };
 
@@ -215,7 +216,7 @@
 
   // initialize key.<modifier> to false
   for (k in _MODIFIERS)
-    assignKey[k] = false;
+    assignKeys[k] = false;
 
   // set current scope (default 'all')
   function setScope(scope){

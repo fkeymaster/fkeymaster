@@ -78,13 +78,13 @@
       var handler = _handlers[key][i];
       // see if it's in the current scope
       if (handler.targetSpec.scope && handler.targetSpec.scope != _scope)
-        return;
+        continue;
       // ignore keypressed in any elements that support keyboard data input as long as they are not specifically targeted
       if (handler.targetSpec.match === null &&
           (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA'))
-        return;
+        continue;
       if (handler.targetSpec.match && !matches_sel(event.target, handler.targetSpec.match)) 
-        return;
+        continue;
       // check if modifiers match if any
       modifiersMatch = handler.mods.length > 0;
       for (k in _mods)
@@ -178,7 +178,10 @@
     for (var i=0; i<keys.length; i++) {
       var key = keys[i];
       //create specific scope for current key in sequence
-      var newScope = (targetSpec.scope || 'all') + '-' + key;
+      var newScope = ((targetSpec.scope === undefined)
+                      ? 'seq-'
+                      : (targetSpec.scope + '-'))
+                     + key;
       if (i < keys.length - 1) {
         (function(scope){
           assignKey(key, targetSpec, function (ev, key) {

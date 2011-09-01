@@ -53,6 +53,18 @@ key(['g', 's'], function(){ /* do something */ });
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
 
+### Using targetSpec
+
+`targetSpec` allows you to specify the elements which receive the events.
+
+```js
+key('t', { targetSpec: '#elem_id' }, func);
+key('t', { targetSpec: '#elem_id', scope: 'issues' }, func);
+key('t', { targetSpec: '.class_name' }, func);
+key('t', { targetSpec: 'textarea' }, func);
+key(['t', 'd'], { targetSpec: 'input.class_name' }, func);
+```
+
 ## Handler function
 
 The handler method is called with two arguments set, the keydown `event` fired, and

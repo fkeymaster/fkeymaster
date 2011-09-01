@@ -138,8 +138,9 @@
 
     keys.forEach(function(key, i){
       //create specific scope for current key in sequence
-      newScope = scope + '-' + key;
+      var newScope = scope + '-' + key;
       if (i < keys.length - 1) {
+      (function(scope){
         assignKey(key, scope, function (ev, key) {
           setScope(this.toString());
 
@@ -147,7 +148,8 @@
           _timer = setTimeout(function () {
             setScope('all');
           }, 1000);
-        }.bind(newScope));
+        })
+      })(newScope);
       } else {
         // last key should perform the method
         assignKey(key, scope, method);

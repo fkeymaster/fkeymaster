@@ -79,13 +79,11 @@
       // see if it's in the current scope
       if(handler.targetSpec.scope && handler.targetSpec.scope != _scope)
         return;
-      // ignore keypressed in any elements that support keyboard data input
-      if(handler.targetSpec.id === null &&
+      // ignore keypressed in any elements that support keyboard data input as long as they are not specifically targeted
+      if(handler.targetSpec.match === null &&
           (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA'))
         return;
-      if(handler.targetSpec.id && event.target.id != handler.targetSpec.id)
-        return;
-      if(handler.targetSpec.tagName && event.target.tagName != handler.targetSpec.tagName)
+      if(handler.targetSpec.match && !matches_sel(event.target, handler.targetSpec.match) 
         return;
       // check if modifiers match if any
       modifiersMatch = handler.mods.length > 0;

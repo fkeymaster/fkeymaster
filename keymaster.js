@@ -53,7 +53,8 @@
       return;
 
     // for each potential shortcut
-    _handlers[key].forEach(function(handler){
+    for (i=0; i<_handlers[key].length; i++) {
+      var handler = _handlers[key][i];
       // see if it's in the current scope
       if (handler.scope == _scope || handler.scope == 'all'){
         // check if modifiers match if any
@@ -80,7 +81,7 @@
           }
         }
       }
-    });
+    }
   };
 
   // unset modifier keys on keyup
@@ -90,8 +91,9 @@
       key = 91;
     if (key in _mods) {
       _mods[key] = false;
-      for (k in _MODIFIERS) if(_MODIFIERS[k] == key)
-        assignKey[k] = false;
+      for (k in _MODIFIERS)
+        if (_MODIFIERS[k] == key)
+          assignKey[k] = false;
     }
   };
 
@@ -105,7 +107,8 @@
     key = key.replace(/\s/g,'');
     keys = key.split(',');
     // for each shortcut
-    keys.forEach(function(originalKey){
+    for (i=0; i<keys.length; i++) {
+      var originalKey = keys[i];
       // set modifier keys if any
       mods = [];
       key = originalKey.split('+');
@@ -125,7 +128,7 @@
                             method: method,
                             key: originalKey,
                             mods: mods });
-    });
+    }
   };
 
   function assignKeys(keys, scope, method) {
@@ -136,13 +139,14 @@
     if (typeof keys == 'string')
       keys = [keys];
 
-    keys.forEach(function(key, i){
+    for (var i=0; i<keys.length; i++) {
+      var key = keys[i];
       //create specific scope for current key in sequence
       var newScope = scope + '-' + key;
       if (i < keys.length - 1) {
-      (function(scope){
+      (function(newScope){
         assignKey(key, scope, function (ev, key) {
-          setScope(this.toString());
+          setScope(newScope);
 
             // reset scope after 1 second
           _timer = setTimeout(function () {
@@ -155,7 +159,7 @@
         assignKey(key, scope, method);
       }
       scope = newScope;
-    });
+    }
   }
 
   // initialize key.<modifier> to false

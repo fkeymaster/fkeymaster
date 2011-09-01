@@ -1,6 +1,6 @@
 # keymaster.js
 
-Keymaster is a simple (~60 LoC) micro-library for defining and
+Keymaster is a simple library for defining and
 dispatching keyboard shortcuts. It has no dependencies.
 
 *It’s a work in progress (e.g. beta), so spare me your nerdrage and instead

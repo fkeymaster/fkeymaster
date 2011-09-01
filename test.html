@@ -28,8 +28,25 @@
   </p>
   
   <p>
-    When a input, a select or a textarea element is focused, key inputs should be ignored.
+    When a input, a select or a textarea element above is focused, key inputs should be ignored except 't' in textarea.
   </p>
+  
+  <p>More tests on target spec:</p>
+
+  <ol>
+    <li>Press 'i'. In the following textarea with or without 'issues' scope.</li>
+    <li>Press 't'. It will only be activated in textarea elements.</li>
+  </ol>
+
+  <textarea placeholder="My ID is TextArea" id="TextArea"></textarea>
+
+  <p>More tests on sequence keys:</p>
+
+  <ol>
+    <li>Press 'g', 's'.</li>
+    <li>Press 'g', 's', 'f'.</li>
+    <li>Press 'ctrl+g' or 'alt+g', 's'.</li>
+  </ol>
 
   <script>
     key('c', 'issues', function(){
@@ -48,6 +65,19 @@
     
     key('i', function(){
       console.log('(example of multiple assignment)');
+    });
+
+    key('i', { match: "#TextArea" }, function(){
+      console.log('You pressed i in TextArea');
+    });
+
+    key('i', { match: "#TextArea", scope: "issues" }, function(){
+      key.setScope('issues');
+      console.log('You pressed i in TextArea with "issues" scope');
+    });
+
+    key('t', { match: "textarea" }, function(){
+      console.log('You pressed t in <textarea/>');
     });
 
     key('o, enter, left', function(){

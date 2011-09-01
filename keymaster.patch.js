@@ -12,7 +12,6 @@
  *   Array.forEach
  *   Array.indexOf
  *   Array.map
- *   Function.bind
  */
 
 

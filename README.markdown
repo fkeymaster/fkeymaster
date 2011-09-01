@@ -54,14 +54,14 @@ if(key.shift) alert('shift is pressed, OMGZ!');
 
 ### Using targetSpec
 
-`targetSpec` allows you to specify the elements which receive the events.
+*targetSpec* allows you to specify the elements which receive the events using simple CSS selector.
 
 ```js
-key('t', { targetSpec: '#elem_id' }, func);
-key('t', { targetSpec: '#elem_id', scope: 'issues' }, func);
-key('t', { targetSpec: '.class_name' }, func);
-key('t', { targetSpec: 'textarea' }, func);
-key(['t', 'd'], { targetSpec: 'input.class_name' }, func);
+key('t', { match: '#elem_id' }, func);
+key('t', { match: '#elem_id', scope: 'issues' }, func);
+key('t', { match: '.class_name' }, func);
+key('t', { match: 'textarea' }, func);
+key(['t', 'd'], { match: 'input.class_name' }, func);
 ```
 
 ## Handler function

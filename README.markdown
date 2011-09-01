@@ -1,4 +1,4 @@
-# keymaster.js
+# FKeymaster
 
 FKeymaster is a simple library for defining and dispatching keyboard shortcuts. It has no dependencies. It's a fork of [keymaster.js][original].
 
@@ -6,10 +6,9 @@ FKeymaster is a simple library for defining and dispatching keyboard shortcuts. 
 
 ## Demonstration
 
-FKeymaster should work with any browser that fires `keyup` and `keydown` events,
-and is tested with IE (6+), Safari, Firefox and Chrome.
+See [live demo][demo].
 
-See [http://madrobby.github.com/keymaster/](http://madrobby.github.com/keymaster/) for a live demo.
+[demo]: http://madrobby.github.com/keymaster/
 
 ## Basic concept
 

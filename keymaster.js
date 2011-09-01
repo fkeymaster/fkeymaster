@@ -134,6 +134,12 @@
     });
   };
 
+  function cloneTargetSpec(targetSpec) {
+    return {scope: targetSpec.scope,
+            id: targetSpec.id,
+            tagName: targetSpec.tagName};
+  } 
+
   function assignKeys(keys, targetSpec, method) {
     if (method === undefined) {
       method = targetSpec;
@@ -145,24 +151,25 @@
       keys = [keys];
 
     keys.forEach(function(key, i){
+      //create specific scope for current key in sequence
+      var newScope = (targetSpec.scope || 'all') + '-' + key;
       if (i < keys.length - 1) {
-        //create specific scope for current key in sequence
-        var newScope = key;
-        if (targetSpec.scope)
-          newScope = targetSpec.scope + '-' + newScope;
-        assignKey(key, targetSpec, function (ev, key) {
-          setScope(this.toString());
+        (function(scope){
+          assignKey(key, targetSpec, function (ev, key) {
+            setScope(scope);
 
-            // reset scope after 1 second
-          _timer = setTimeout(function () {
-            setScope('all');
-          }, 1000);
-        }.bind(newScope));
-        targetSpec.scope = newScope;
+              // reset scope after 1 second
+            _timer = setTimeout(function () {
+              setScope('all');
+            }, 1000);
+          })
+        })(newScope);
       } else {
         // last key should perform the method
         assignKey(key, targetSpec, method);
       }
+      targetSpec = cloneTargetSpec(targetSpec);
+      targetSpec.scope = newScope;
     });
   }
 

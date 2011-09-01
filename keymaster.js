@@ -28,6 +28,32 @@
   for (k=1; k<20; k++)
     _MODIFIERS['f' + k] = 111 + k;
 
+  //Test a element against a selector
+  function matches_sel(elem,selector,first,a,b,c){
+    //Take off first part of selector
+    first=(selector=selector.split(".")).shift();
+    c=" "+elem.className+" ";
+    
+    //If there is a first section and it contains an id, check to see if that matches with the element, otherwise return a falsey value
+    if(first&&~(a=first.indexOf("#"))&&(b=first.slice(1+a),first=first.slice(0,a),elem.id!=b)?
+    0
+    :
+    //if there is anything left of the first section, test to see if it matches with the element's tag
+    first&&elem.nodeName!=first.toUpperCase()?
+    0
+    :1
+    ){
+        //Loop through the rest of the selector testing for classNames
+        for(a=0,b=selector.length;a<b;a++){
+            if(!~c.indexOf(" "+selector[a]+" ")) return 0;
+        }
+        
+        
+        //If everything else matched, return true
+        return 1;
+    }
+  }
+
   // handle keydown event
   function dispatch(event){
     var key, tagName, handler, k, i, modifiersMatch;

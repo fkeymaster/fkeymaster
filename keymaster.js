@@ -7,6 +7,7 @@
     _handlers = {},
     _mods = { 16: false, 18: false, 17: false, 91: false },
     _scope = 'all',
+    _fallbackScope = null,
     // modifier keys
     _MODIFIERS = {
       '⇧': 16, shift: 16,
@@ -178,21 +179,31 @@
     for (var i=0; i<keys.length; i++) {
       var key = keys[i];
       //create specific scope for current key in sequence
-      var newScope = ((targetSpec.scope === undefined)
-                      ? 'seq-'
-                      : (targetSpec.scope + '-'))
-                     + key;
+      var newScope = key;
+      if (targetSpec.scope !== undefined)
+        newScope = targetSpec.scope + '-' + newScope;
+      if (i == 0)
+        newScope = 'seq-' + newScope;
       if (i < keys.length - 1) {
-        (function(scope){
+        (function(scope, seqBegin){
           assignKey(key, targetSpec, function (ev, key) {
+            // If another seq is in progress, then this seq won't be started.
+            if (_fallbackScope !== null)
+              return;
+            if (seqBegin) {
+              _fallbackScope = _scope;
+              console.debug('save scope: ' + _scope);
+              }
             setScope(scope);
 
               // reset scope after 1 second
             _timer = setTimeout(function () {
-              setScope('all');
+              console.debug('restore scope: ' + _fallbackScope);
+              setScope(_fallbackScope);
+              _fallbackScope = null;
             }, 1000);
           })
-        })(newScope);
+        })(newScope, i==0);
       } else {
         // last key should perform the method
         assignKey(key, targetSpec, method);
@@ -209,6 +220,7 @@
   // set current scope (default 'all')
   function setScope(scope){
     _scope = scope || 'all';
+    console.debug('set scope to: ' + _scope);
   };
 
   // cross-browser events

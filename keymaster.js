@@ -23,8 +23,15 @@
       left: 37, up: 38,
       right: 39, down: 40,
       del: 46, 'delete': 46,
+      '/': 47, slash: 47,
       home: 36, end: 35,
-      pageup: 33, pagedown: 34 };
+      pageup: 33, pagedown: 34
+    },
+    // keyCode to charCode, or just in need of remapping
+    _KC_MAP = {
+      93: 91, 224: 91,  // right command on webkit, command on Gecko
+      191: 47,          // slash '/'
+    }
 
   for (k=1; k<20; k++)
     _MODIFIERS['f' + k] = 111 + k;
@@ -59,9 +66,10 @@
     var key, tagName, handler, k, i, modifiersMatch;
     tagName = (event.target || event.srcElement).tagName;
     key = event.keyCode;
+    console.debug('Got key:',tagName, key, _KC_MAP[key]);
+    if (key in _KC_MAP)
+      key = _KC_MAP[key];
     // if a modifier key, set the key.<modifierkeyname> property to true and return
-    if (key == 93 || key == 224)
-      key = 91; // right command on webkit, command on Gecko
     if (key in _mods) {
       _mods[key] = true;
       // 'assignKeys' from inside this closure is exported to window.key
@@ -116,8 +124,8 @@
   // unset modifier keys on keyup
   function clearModifier(event){
     var key = event.keyCode, k;
-    if (key == 93 || key == 224)
-      key = 91;
+    if (key in _KC_MAP)
+      key = _KC_MAP[key];
     if (key in _mods) {
       _mods[key] = false;
       for (k in _MODIFIERS)

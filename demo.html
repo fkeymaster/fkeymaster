@@ -90,6 +90,11 @@ function init() {
   </p>
 
   <script>
+    key('/', function(){
+      msg('/ pressed!');
+      return false;
+    });
+
     key('c', 'issues', function(){
      msg('c/issues');
     });

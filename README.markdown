@@ -59,6 +59,14 @@ key(['g', 's'], func);
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
 
+### `!`, `@`, `?`, ...
+
+For keys like those, you need to use
+
+ * `!` → `shift+1`
+ * `@` → `shift+2`
+ * `?' → `shift+/`
+
 ### Using targetSpec
 
 *targetSpec* allows you to specify the elements which receive the events using simple CSS selector.

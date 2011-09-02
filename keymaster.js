@@ -4,6 +4,8 @@
 
 ;(function(global){
   var k,
+    // original console.debug
+    _CONSOLE_DEBUG,
     _handlers = {},
     _mods = { 16: false, 18: false, 17: false, 91: false },
     _scope = 'all',
@@ -56,6 +58,14 @@
         221: 125          // '}'
       }
     }
+  // setting up console.debug
+  if (typeof console == 'undefined')
+    console = {};
+  _CONSOLE_DEBUG = console.debug || function(){};
+  console.debug = function() {
+    if (global.key.DEBUG)
+      _CONSOLE_DEBUG.apply(this, arguments);
+  }
 
   for (k=1; k<20; k++)
     _MODIFIERS['f' + k] = 111 + k;
@@ -270,6 +280,7 @@
   // set window.key and window.key.setScope
   global.key = assignKeys;
   global.key.setScope = setScope;
+  global.key.DEBUG = false;
 
   if (typeof module !== 'undefined')
     module.exports = key;

@@ -90,9 +90,22 @@ function init() {
   </p>
 
   <script>
+    key('1', function(){
+      msg('1 pressed!');
+      return false;
+    });
+
+    key('shift+1', function(){
+      msg('shift+1 pressed!');
+    });
+
     key('/', function(){
       msg('/ pressed!');
       return false;
+    });
+
+    key('shift+/', function(){
+      msg('shift+/ pressed!');
     });
 
     key('c', 'issues', function(){

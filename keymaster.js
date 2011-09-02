@@ -23,14 +23,38 @@
       left: 37, up: 38,
       right: 39, down: 40,
       del: 46, 'delete': 46,
-      '/': 47, slash: 47,
+      slash: 47, backslash: 92,
       home: 36, end: 35,
       pageup: 33, pagedown: 34
     },
     // keyCode to charCode, or just in need of remapping
+    // This might be subject to keyboard layout, might not work entirely, very
+    // possibly to work only with us keyboard.
     _KC_MAP = {
-      93: 91, 224: 91,  // right command on webkit, command on Gecko
-      191: 47,          // slash '/'
+      false: {
+         93: 91, 224: 91, // right command on webkit, command on Gecko
+        109: 45,          // '-' minus
+        188: 44,          // ','
+        190: 46,          // '.'
+        191: 47,          // '/' slash
+        192: 96,          // '`'
+        219: 91,          // '['
+        220: 92,          // '\' blashslash
+        221: 93           // ']'
+      },
+      true: {
+         59:  58,         // ':'
+         61:  43,         // '+'
+         93:  91, 224: 91,// right command on webkit, command on Gecko
+        109:  95,         // '_' underscore
+        188:  60,         // '<'
+        190:  62,         // '>'
+        191:  63,         // '?'
+        192: 126,         // '~'
+        219: 123,         // '{'
+        220: 124,         // '?' blashslash
+        221: 125          // '}'
+      }
     }
 
   for (k=1; k<20; k++)
@@ -63,12 +87,10 @@
 
   // handle keydown event
   function dispatch(event){
-    var key, tagName, handler, k, i, modifiersMatch;
+    var key, tagName, charCodehandler, k, i, modifiersMatch;
     tagName = (event.target || event.srcElement).tagName;
-    key = event.keyCode;
-    console.debug('Got key:',tagName, key, _KC_MAP[key]);
-    if (key in _KC_MAP)
-      key = _KC_MAP[key];
+    key = _KC_MAP[event.keyCode == 16][event.keyCode] || event.keyCode;
+    console.debug('Got key:', event, tagName, event.keyCode, key);
     // if a modifier key, set the key.<modifierkeyname> property to true and return
     if (key in _mods) {
       _mods[key] = true;
@@ -123,9 +145,8 @@
 
   // unset modifier keys on keyup
   function clearModifier(event){
-    var key = event.keyCode, k;
-    if (key in _KC_MAP)
-      key = _KC_MAP[key];
+    var key, k;
+    key = _KC_MAP[event.keyCode == 16][event.keyCode] || event.keyCode;
     if (key in _mods) {
       _mods[key] = false;
       for (k in _MODIFIERS)

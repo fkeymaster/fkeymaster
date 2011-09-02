@@ -126,10 +126,6 @@ $.key('⌘+r', function () {
 })
 ```
 
-## TODO
-
-* Comprehensive test suite
-
 ## License
 
 * FKeymaster is (c) 2011 FKeymaster contributers and may be freely distributed under the MIT license.

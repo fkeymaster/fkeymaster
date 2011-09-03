@@ -59,13 +59,13 @@ key(['g', 's'], func);
 if(key.shift) alert('shift is pressed, OMGZ!');
 ```
 
-### `!`, `@`, `?`, ...
+### Assigning keys `!`, `@`, `?`, ...
 
 For keys like those, you need to use
 
  * `!` → `shift+1`
  * `@` → `shift+2`
- * `?' → `shift+/`
+ * `?` → `shift+/`
 
 ### Using targetSpec
 

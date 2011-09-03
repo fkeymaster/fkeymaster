@@ -81,18 +81,34 @@ key(['t', 'd'], { match: 'input.class_name' }, func);
 
 ## Handler function
 
-The handler method is called with two arguments set, the keydown `event` fired, and
-an object containing, among others, the following two properties:
+The handler function is called with argument keydown [`event`][keyevent] fired.
 
-`key`: a string that contains the key triggered, e.g. `ctrl+r`
-`scope`: a string describing the scope (or `all`)
+[keyevent]: https://developer.mozilla.org/en/DOM/Event/UIEvent/KeyEvent
 
-```javascript
-key('⌘+r, ctrl+r', function(event, handler){
-  console.log(handler.shortcut, handler.scope);
+You can access more via `this`:
+
+ * `this.key`: `string` the triggered key, e.g. `"ctrl+r"`
+ * `this.targetSpec`:
+   * `this.targetSpec.scope`: `string` the scope, e.g. `"all"`.
+   * `this.targetSpec.match`: `string` the CSS selector, e.g. `"#issues"`.
+
+For example:
+
+```js
+key('j', { match: '.issues' }, function(event){
+    // since match is a CSS selector, you can easily pass it to your favorite
+    // library to select elements. This would be help when you need to do
+    // something to ALL matched elements, in this case, it is elements with
+    // 'issues' class.
+    var $elements = $(this.targetSpec.match);
+
+    // or you can get the target only
+    var $just_target = $(event.target);
+
+    console.log(this.key, this.targetSpec.scope);
+
+    // ...
 });
-
-// "ctrl+r", "all"
 ```
 
 ## CoffeeScript

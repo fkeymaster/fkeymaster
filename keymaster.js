@@ -137,7 +137,7 @@
       if ((handler.mods.length == 0
            && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91])
           || modifiersMatch){
-        if (handler.method(event, handler)===false){
+        if (handler.method(event)===false){
           if (event.preventDefault)
             event.preventDefault();
           else

@@ -151,6 +151,14 @@ $(function(){
       msg('shift+/ pressed!');
     });
 
+    key('ctrl+shift+-', function(){
+      msg('ctrl+shift+- pressed!');
+    });
+
+    key('ctrl+shift+=', function(){
+      msg('ctrl+shift+= pressed!');
+    });
+
     key('command+r, ctrl+r', 'issues', function(){
       msg('Hijacked Command+R or Ctrl+R, damn!');
       return false;

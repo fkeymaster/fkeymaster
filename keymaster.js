@@ -36,7 +36,9 @@
       false: {
          93: 91, 224: 91, // right command on webkit, command on Gecko
         109: 45,          // '-' minus
+        187: 61,          // '=' on Chromium
         188: 44,          // ','
+        189: 45,          // '-' on Chromium
         190: 46,          // '.'
         191: 47,          // '/' slash
         192: 96,          // '`'
@@ -49,7 +51,9 @@
          61:  43,         // '+'
          93:  91, 224: 91,// right command on webkit, command on Gecko
         109:  95,         // '_' underscore
+        187:  43,         // '+' on Chromium
         188:  60,         // '<'
+        189:  95,         // '_' on Chromium
         190:  62,         // '>'
         191:  63,         // '?'
         192: 126,         // '~'

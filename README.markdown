@@ -46,8 +46,8 @@ key(KEY, [TARGET_SPEC,] HANDLER_FUNC);
 Where
 
  * `KEY` is the key(s) you want to bind,
- * `TARGET\_SPEC` has more complex structure please read "TARGET_SPEC" subsection below,
- * `HANDLER\_FUNC` is the handler when `KEY` is pressed.
+ * `TARGET_SPEC` has more complex structure please read "TARGET_SPEC" subsection below,
+ * `HANDLER_FUNC` is the handler when `KEY` is pressed.
 
 Here are some quick examples:
 
@@ -84,7 +84,7 @@ For keys like those, you need to use
 
 ### TARGET\_SPEC
 
-`TARGET\_SPEC` can be one of
+`TARGET_SPEC` can be one of
 
  * `string` scope,
  * `array` list of HTML elements for matching,
@@ -92,7 +92,7 @@ For keys like those, you need to use
  * `function` for custom matching function,
  * `targetSpec` an object, see below.
 
-`targetSpec` is simple JavaScript object and FKeymaster stores/converts `TARGET\_SPEC` as/to `targetSpec`.
+`targetSpec` is simple JavaScript object and FKeymaster stores/converts `TARGET_SPEC` as/to `targetSpec`.
 
 It has these properties:
 

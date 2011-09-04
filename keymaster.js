@@ -119,8 +119,8 @@
         continue;
       if (handler.targetSpec.match &&
           ((typeof handler.targetSpec.match == "string"     && !matches_sel(event.target, handler.targetSpec.match))
-           || (handler.targetSpec.match instanceof Array    && handler.targetSpec.match.indexOf(event.target) != -1)
-           || (handler.targetSpec.match instanceof Function && handler.targetSpec.match(event, handler))
+           || (handler.targetSpec.match instanceof Array    &&  handler.targetSpec.match.indexOf(event.target) == -1)
+           || (handler.targetSpec.match instanceof Function && !handler.targetSpec.match(event, handler))
           ))
         continue;
       // check if modifiers match if any

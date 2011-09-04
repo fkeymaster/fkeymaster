@@ -15,7 +15,7 @@
       '⇧': 16, shift: 16,
       option: 18, '⌥': 18, alt: 18,
       ctrl: 17, control: 17,
-      command: 91, '⌘': 91
+      meta: 91, command: 91, '⌘': 91
     },
     // special keys
     _MAP = {
@@ -101,15 +101,7 @@
     tagName = (event.target || event.srcElement).tagName;
     key = _KC_MAP[event.keyCode == 16][event.keyCode] || event.keyCode;
     console.debug('Got key:', event, tagName, event.keyCode, key);
-    // if a modifier key, set the key.<modifierkeyname> property to true and return
-    if (key in _mods) {
-      _mods[key] = true;
-      // 'assignKeys' from inside this closure is exported to window.key
-      for (k in _MODIFIERS)
-        if (_MODIFIERS[k] == key)
-          assignKeys[k] = true;
-      return;
-    }
+    setModifiers(event);
 
     // abort if no potentially matching shortcuts found
     if (!(key in _handlers))
@@ -157,17 +149,29 @@
     }
   };
 
-  // unset modifier keys on keyup
-  function clearModifier(event){
-    var key, k;
-    key = _KC_MAP[event.keyCode == 16][event.keyCode] || event.keyCode;
+  function setModifiers(event) {
+    // XXX this function requires a rewrite.
+    var downEvent = event.type == 'keydown';
+    var key = _KC_MAP[event.keyCode == 16][event.keyCode] || event.keyCode;
+    // if a modifier key, set the key.<modifierkeyname> property to true and return
     if (key in _mods) {
-      _mods[key] = false;
+      _mods[key] = downEvent;
+      // 'assignKeys' from inside this closure is exported to window.key
       for (k in _MODIFIERS)
         if (_MODIFIERS[k] == key)
-          assignKeys[k] = false;
+          assignKeys[k] = downEvent;
+      return;
     }
-  };
+    // this is overlapping above
+    for (var k in _MODIFIERS) {
+      if (k + 'Key' in event) {
+        _mods[_MODIFIERS[k]] = event[k + 'Key'];
+        for (km in _MODIFIERS)
+          if (km == k)
+            assignKeys[km] = event[k + 'Key'];
+      }
+    }
+  }
 
   // parse and assign shortcut
   function assignKey(key, targetSpec, method){
@@ -310,7 +314,7 @@
 
   // set the handlers globally on document
   addEvent(document, 'keydown', dispatch);
-  addEvent(document, 'keyup', clearModifier);
+  addEvent(document, 'keyup', setModifiers);
 
   // set window.key and window.key.setScope
   global.key = assignKeys;

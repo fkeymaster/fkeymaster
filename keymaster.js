@@ -125,7 +125,11 @@
       if (handler.targetSpec.match === null &&
           (tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA'))
         continue;
-      if (handler.targetSpec.match && !matches_sel(event.target, handler.targetSpec.match)) 
+      if (handler.targetSpec.match &&
+          ((typeof handler.targetSpec.match == "string"     && !matches_sel(event.target, handler.targetSpec.match))
+           || (handler.targetSpec.match instanceof Array    && handler.targetSpec.match.indexOf(event.target) != -1)
+           || (handler.targetSpec.match instanceof Function && handler.targetSpec.match(event, handler))
+          ))
         continue;
       // check if modifiers match if any
       modifiersMatch = handler.mods.length > 0;
@@ -168,12 +172,14 @@
   // parse and assign shortcut
   function assignKey(key, targetSpec, method){
     var keys, mods, i, mi;
+    /*
     if (method === undefined) {
       method = targetSpec;
       targetSpec = { match: null };
     }
     if (typeof targetSpec == 'string')
       targetSpec = { scope: targetSpec };
+    */
     key = key.replace(/\s/g,'');
     keys = key.split(',');
     // for each shortcut
@@ -203,7 +209,12 @@
 
   function cloneTargetSpec(targetSpec) {
     return {scope: targetSpec.scope,
-            match: targetSpec.match};
+            match: (targetSpec.match instanceof Array)
+                   // don't use reference of array, duplicate it
+                   ? targetSpec.match.slice()
+                   // null, undefined, string
+                   : targetSpec.match
+            };
   } 
 
   function assignKeys(keys, targetSpec, method) {
@@ -211,10 +222,28 @@
       method = targetSpec;
       targetSpec = { match: null };
     }
-    if (typeof targetSpec == 'string')
+
+    if (typeof targetSpec == "string")
       targetSpec = { scope: targetSpec };
+    else if (targetSpec instanceof Array ||
+             targetSpec instanceof Function)
+      targetSpec = { match: targetSpec };
+    else if (targetSpec.match === undefined && targetSpec.scope === undefined)
+      targetSpec = { match: [targetSpec] };
+
     if (typeof keys == 'string')
       keys = [keys];
+    // don't touch original targetSpec
+    targetSpec = cloneTargetSpec(targetSpec);
+
+    // If match is a single HTMLElement, put it in a array
+    // But we don't care it really is a HTMLElement, though it should be,
+    // because IE does not have the definition of HTMLElement.
+    if (  targetSpec.match &&
+        !(typeof targetSpec.match == "string") &&
+        !(targetSpec.match instanceof Array) &&
+        !(targetSpec.match instanceof Function))
+      targetSpec.match = [targetSpec.match];
 
     for (var i=0; i<keys.length; i++) {
       var key = keys[i];
@@ -234,13 +263,15 @@
               _fallbackScope = _scope;
               console.debug('save scope: ' + _scope);
               }
-            setScope(scope);
+            setScope(scope, true);
 
               // reset scope after 1 second
             _timer = setTimeout(function () {
+              if (_fallbackScope === null) {
+                return;
+              }
               console.debug('restore scope: ' + _fallbackScope);
               setScope(_fallbackScope);
-              _fallbackScope = null;
             }, 1000);
           })
         })(newScope, i==0);
@@ -258,9 +289,13 @@
     assignKeys[k] = false;
 
   // set current scope (default 'all')
-  function setScope(scope){
+  function setScope(scope, keepFallback){
     _scope = scope || 'all';
     console.debug('set scope to: ' + _scope);
+    if (!keepFallback) {
+      _fallbackScope = null;
+      console.debug('fallback scope has been resetted');
+    }
   };
 
   // cross-browser events

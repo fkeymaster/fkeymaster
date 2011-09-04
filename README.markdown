@@ -37,6 +37,20 @@ Use `key.setScope` for switching current scope.
 
 ## Assigning keys to handler function
 
+The key assignment function has the syntax as follows:
+
+```js
+key(KEY, [TARGET_SPEC,] HANDLER_FUNC);
+```
+
+Where
+
+ * `KEY` is the key(s) you want to bind,
+ * `TARGET\_SPEC` has more complex structure please read "TARGET_SPEC" subsection below,
+ * `HANDLER\_FUNC` is the handler when `KEY` is pressed.
+
+Here are some quick examples:
+
 ```javascript
 // define short of 'a'
 key('a', func);
@@ -44,10 +58,10 @@ key('a', func);
 // returning false stops the event and prevents default browser events
 key('ctrl+r', function(){ alert('stopped reload!'); return false });
 
-// multiple shortcuts
+// multiple keys
 key('command+r, ctrl+r', func);
 
-// shortcut with a scope
+// key with a scope
 key('o, enter', 'issues', func);
 key('o, enter', 'files', func);
 key.setScope('issues'); // default scope is 'all'
@@ -56,7 +70,8 @@ key.setScope('issues'); // default scope is 'all'
 key(['g', 's'], func);
 
 // query modifier keys
-if(key.shift) alert('shift is pressed, OMGZ!');
+if (key.shift)
+  alert('shift is pressed, OMGZ!');
 ```
 
 ### Assigning keys `!`, `@`, `?`, ...
@@ -67,9 +82,28 @@ For keys like those, you need to use
  * `@` → `shift+2`
  * `?` → `shift+/`
 
-### Using targetSpec
+### TARGET\_SPEC
 
-*targetSpec* allows you to specify the elements which receive the events using simple CSS selector.
+`TARGET\_SPEC` can be one of
+
+ * `string` scope,
+ * `array` list of HTML elements for matching,
+ * `HTML Element` for matching,
+ * `function` for custom matching function,
+ * `targetSpec` an object, see below.
+
+`targetSpec` is simple JavaScript object and FKeymaster stores/converts `TARGET\_SPEC` as/to `targetSpec`.
+
+It has these properties:
+
+ * `scope`
+ * `match` for matching, it can be one of
+   * `string` CSS selector, FKeymaster has its own CSS selector match function, it uses this to perform matching,
+   * `HTML Element` for matching, you can specify one element, but it will automatically be put into an array when FKeymaster processes key assignments.
+   * `array` list of HTML elements for matching,
+   * `function` for custom matching function, you can specify your own matching function and returns true or false to indicate if it's a match, see below for custom match function.
+
+Here are some examples:
 
 ```js
 key('t', { match: '#elem_id' }, func);
@@ -79,7 +113,7 @@ key('t', { match: 'textarea' }, func);
 key(['t', 'd'], { match: 'input.class_name' }, func);
 ```
 
-## Handler function
+### Handler function
 
 The handler function is called with argument keydown [`event`][keyevent] fired.
 
@@ -109,6 +143,20 @@ key('j', { match: '.issues' }, function(event){
 
     // ...
 });
+```
+
+### Custom match function
+
+This works similar to handler function. A custom function should be implemented as
+
+```js
+function myOwnMatch (event, handler) {
+  // handler.targetSpec === this is true.
+
+  // ...
+
+  return match_or_not;
+}
 ```
 
 ## CoffeeScript

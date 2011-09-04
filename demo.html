@@ -25,7 +25,7 @@ kbd {
   right: 0;
   background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
-  font: monospace;
+  font-family: monospace;
   font-weight: bold;
   border-bottom-left-radius: 0.5ex;
   padding: 0.5ex;
@@ -87,16 +87,24 @@ $(function(){
   <h2>Messages</h2>
 
   <div>
-    <div>Press <kbd>c</kbd> in it with [all] to clear messages</div>
+    To clear, press:
+    <ul>
+      <li><kbd>c</kbd> [all]</li>
+      <li><kbd>Shift</kbd>+<kbd>c</kbd></li>
+    </ul>
     <textarea id="messages"></textarea>
   </div>
 
   <script>
-    key('c', { match: '#messages' }, function(){
-      var e = document.getElementById('messages');
+    function clearMessages(event){
+      var e = event.target;
       e.value = '';
       return false;
-    });
+    }
+
+    key('c', { scope: 'all', match: '#messages' }, clearMessages);
+
+    key('shift+c', document.getElementById('messages'), clearMessages);
   </script>
 
   <h2>Stuff</h2>
@@ -113,14 +121,11 @@ $(function(){
   <ol>
     <li><kbd>o</kbd> or <kbd>Enter</kbd> or <kbd>&larr;</kbd></li>
     <li><kbd>i</kbd>: match: <code>#TextArea</code>. [issues] or [all]</li>
+    <li><kbd>t</kbd>: match: <code>textarea</code>.</li>
     <li><kbd>s</kbd>+<kbd>i</kbd>: Switches scope to 'issues'.</li>
     <li><kbd>s</kbd>+<kbd>a</kbd>: Switches scope to 'all'.</li>
     <li><kbd>s</kbd>+<kbd>b</kbd>: Switches scope to 'Blah Blah Blah'.</li>
-    <li><kbd>c</kbd> [issues]</li>
-    <li><kbd>t</kbd>: match: <code>textarea</code>.</li>
-    <li><kbd>⌘</kbd>+<kbd>&rarr;</kbd>, <kbd>Shift</kbd>+<kbd>&larr;</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>d</kbd>.</li>
     <li><kbd>g</kbd>→<kbd>i</kbd>: Go to Issues</li>
-    <li><kbd>Ctrl</kbd>+<kbd>g</kbd> or <kbd>Alt</kbd>+<kbd>g</kbd>→<kbd>s</kbd></li>
   </ol>
 
   <p>
@@ -144,10 +149,6 @@ $(function(){
 
     key('shift+/', function(){
       msg('shift+/ pressed!');
-    });
-
-    key('c', 'issues', function(){
-     msg('c/issues');
     });
 
     key('command+r, ctrl+r', 'issues', function(){

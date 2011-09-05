@@ -1,0 +1,65 @@
+FKeymaster Unittest
+===================
+
+FKeymaster unittest uses D.O.H., a test library by Dojo.
+
+Setting Up
+----------
+
+```
+cd /path/to/root-of-git-clone
+
+# Create a folder for Dojo
+mkdir dojotest
+
+cd dojotest
+
+# Get the Source of Dojo Toolkit SDK
+# *** NOT Dojo Toolkit Release ***
+wget "link to SDK tarball"
+
+tar xf dojo-release-*-src.tar.gz
+
+# Create symbolic links
+ln -s dojo-release-*-src/dojo
+ln -s dojo-release-*-src/dojox
+ln -s dojo-release-*-src/util
+
+# Create a symbolic links for our test suite
+# This gives us module structure like
+#   fkm.tests.foo.bar
+# for use in DOH
+ln -s ../ fkm
+```
+
+### File Structure
+
+```
+root of Git clone <~+
+  |                 s
+  + dojotest/       s
+  | + fkm/ ~~~~~~~~~+
+  | + dojo/ ~~~~~~~~~~~~~~~~~~~~~~+
+  | + util/ ~~~~~~~~~~~~~~~~~~~~+ S
+  | + dojo-release-VERSION-src/ S S
+  |   + dojo/ <~~~~~~~~~~~~~~~~~S~+
+  |   + util/ <~~~~~~~~~~~~~~~~~+
+  + README.mkd
+  + fkm.js
+  + tests/
+    + README.mkd    - The file you are reading.
+    + module.js     - Main test module
+    + runTests.html - Redirection page to D.O.H.
+```
+
+Running Tests
+-------------
+
+```
+cd /path/to/root-of-git-clone/dojotest
+
+# Setting up web server
+python -m SimpleHTTPServer
+```
+
+Navigate to `http://localhost:8000/fkm/tests/runTests.html`.
